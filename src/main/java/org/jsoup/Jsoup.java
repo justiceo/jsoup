@@ -248,5 +248,9 @@ public class Jsoup {
         Cleaner cleaner = new Cleaner(whitelist);
         return cleaner.isValid(dirty);
     }
+
+    public static Document saveLinks(String path) {
+        return new Document();
+    }
     
 }
