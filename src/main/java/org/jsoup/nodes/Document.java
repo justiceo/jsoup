@@ -5,8 +5,12 @@ import org.jsoup.helper.Validate;
 import org.jsoup.parser.Tag;
 import org.jsoup.select.Elements;
 
+import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -415,6 +419,25 @@ public class Document extends Element {
     public Document quirksMode(QuirksMode quirksMode) {
         this.quirksMode = quirksMode;
         return this;
+    }
+
+    public boolean saveOffline() {
+        //This will print a complete absolute path from where your application was initialized.
+        return saveOffline(Paths.get("user.dir"));
+    }
+
+    /* allow document to be saved offline */
+    public boolean saveOffline(Path path) {
+        if(!Files.exists(path)) return false;
+        try {
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(path.getFileName().toAbsolutePath().toString()));
+            bufferedWriter.write(this.html());
+        } catch (FileNotFoundException e) {
+            return false;
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
     }
 
     @Override
