@@ -1,13 +1,16 @@
 package org.jsoup;
 
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
 import org.jsoup.safety.Cleaner;
 import org.jsoup.safety.Whitelist;
 import org.jsoup.helper.DataUtil;
 import org.jsoup.helper.HttpConnection;
+import org.jsoup.select.Elements;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -249,8 +252,29 @@ public class Jsoup {
         return cleaner.isValid(dirty);
     }
 
-    public static Document saveLinks(String path) {
-        return new Document();
+    public static void saveLinks(String url, String fileName) {
+
+        // get the document
+        Document doc = null;
+        try {
+            doc = connect(url).get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // extract the links
+        Elements links = doc.select("a[href]");
+
+        // save them to file
+        try {
+            FileWriter fileWriter = new FileWriter(new File(fileName));
+            for(Element link: links)
+                fileWriter.write(link.attr("abs:href") + "\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
     
 }
