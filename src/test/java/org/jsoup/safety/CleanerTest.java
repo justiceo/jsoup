@@ -5,6 +5,12 @@ import org.jsoup.TextUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities;
 import org.junit.Test;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.util.Scanner;
+
 import static org.junit.Assert.*;
 
 /**
@@ -241,5 +247,25 @@ public class CleanerTest {
         Whitelist whitelist = Whitelist.relaxed();
         whitelist.addTags( "script" );
         assertTrue( Jsoup.isValid("Hello<script>alert('Doh')</script>World !", whitelist ) );
+    }
+
+    @Test
+    public void testSaveLinks() {
+        // using example.com which has only one domain
+        String fileDestination = "index.txt";
+        Scanner scanner = null;
+        String linkFromExample_com = "";
+        String expectedLink = "http://www.iana.org/domains/example";
+        try {
+            Jsoup.connect("http://example.com").get().saveLinks(fileDestination);
+            scanner = new Scanner(new File(fileDestination));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        while(scanner.hasNext()) {
+            linkFromExample_com += scanner.next();
+        }
+        assertEquals(expectedLink, linkFromExample_com);
     }
 }

@@ -251,30 +251,5 @@ public class Jsoup {
         Cleaner cleaner = new Cleaner(whitelist);
         return cleaner.isValid(dirty);
     }
-
-    public static void saveLinks(String url, String fileName) {
-
-        // get the document
-        Document doc = null;
-        try {
-            doc = connect(url).get();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // extract the links
-        Elements links = doc.select("a[href]");
-
-        // save them to file
-        try {
-            FileWriter fileWriter = new FileWriter(new File(fileName));
-            for(Element link: links)
-                fileWriter.write(link.attr("abs:href") + "\n");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-    }
     
 }
