@@ -1,6 +1,5 @@
 package org.jsoup.nodes;
 
-import org.jsoup.Jsoup;
 import org.jsoup.helper.StringUtil;
 import org.jsoup.helper.Validate;
 import org.jsoup.parser.Tag;
@@ -442,16 +441,27 @@ public class Document extends Element {
     }
 
 
-    public void saveLinks(String fileName) {
+    public void saveLinks(String fileName, boolean extractLinks) {
 
+        Elements elems = null;
         // extract the links
-        Elements links = this.select("a[href]");
+        if (extractLinks) {
+             elems = this.select("a[href]");
+        }
+        else if (!extractLinks) {
+            elems = this.select("img[src]");
+        }
 
         // save them to file
         try {
             FileWriter fileWriter = new FileWriter(new File(fileName));
-            for(Element link: links)
+            for(Element link: elems)
+            if (extractLinks) {
                 fileWriter.write(link.attr("abs:href") + "\n");
+            }
+            else if (!extractLinks) {
+                fileWriter.write(link.attr("abs:src") + "\n");
+            }
 
             fileWriter.flush();
             fileWriter.close();
