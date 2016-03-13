@@ -2,11 +2,14 @@ package org.jsoup.nodes;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 import org.jsoup.Jsoup;
 import org.jsoup.TextUtil;
 import org.jsoup.integration.ParseTest;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.Ignore;
 
@@ -165,5 +168,32 @@ public class DocumentTest {
             linkFromExample_com += scanner.next();
         }
         assertEquals(expectedLink, linkFromExample_com);
+    }
+
+    @Test
+    public void testSaveImages() {
+        // using example.com which has only one domain
+        String saveFolder = "Image_Downloads";
+        File dir = new File(saveFolder);
+
+        // if folder exists, delete all its contents
+        if(Files.exists(Paths.get(saveFolder))) {
+            File[] files = dir.listFiles();
+            for(File f: files) f.delete();
+        }
+
+        // assert it is empty
+        File[] contents = dir.listFiles();
+        Assert.assertEquals(0, contents.length);
+
+        try {
+            Jsoup.connect("http://drexel.edu").get().saveImagesTo(saveFolder);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        assertTrue(Files.exists(Paths.get(saveFolder)));
+        // also assert it's not empty
+        contents = dir.listFiles();
+        Assert.assertNotSame(0, contents.length);
     }
 }

@@ -7,6 +7,7 @@ import org.jsoup.parser.Tag;
 import org.jsoup.select.Elements;
 
 import java.io.*;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.nio.file.Files;
@@ -439,6 +440,47 @@ public class Document extends Element {
             return false;
         }
         return true;
+    }
+
+    public void saveImagesTo(String path) {
+        // extract images tags
+        Elements images = this.select("img");
+        Path savedDirectory = Paths.get(path);
+
+        // create images download folder if not exists
+        if(!Files.exists(savedDirectory)) {
+            new File(savedDirectory.toString()).mkdir();
+        }
+
+        // download the images
+        for(Element image: images) {
+            String imageUrl = image.absUrl("src");
+            downloadImage(imageUrl, savedDirectory);
+        }
+    }
+
+    private void downloadImage(String imageUrl, Path downloadPath) {
+
+        // prepare image file name
+        int cutOff = imageUrl.lastIndexOf("/");
+        String imageFilename = imageUrl.substring(cutOff);
+
+        // open stream to image
+        try {
+            InputStream inputStream = new URL(imageUrl).openStream();
+            OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(downloadPath + imageFilename));
+
+
+            for(int in; (in = inputStream.read()) != -1;) {
+                outputStream.write(in);
+            }
+
+            inputStream.close();
+            outputStream.close();
+        } catch (IOException e) {
+            System.out.println("Unable to save " + imageUrl + " as an image. Check the url and try again");
+        }
+
     }
 
 
