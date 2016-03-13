@@ -180,20 +180,19 @@ public class DocumentTest {
         if(Files.exists(Paths.get(saveFolder))) {
             File[] files = dir.listFiles();
             for(File f: files) f.delete();
+
+            // assert it is empty
+            Assert.assertEquals(0, dir.listFiles().length);
         }
 
-        // assert it is empty
-        File[] contents = dir.listFiles();
-        Assert.assertEquals(0, contents.length);
-
         try {
-            Jsoup.connect("http://drexel.edu").get().saveImagesTo(saveFolder);
+            Jsoup.connect("http://imgur.com").get().saveImagesTo(saveFolder);
         } catch (IOException e) {
             e.printStackTrace();
         }
         assertTrue(Files.exists(Paths.get(saveFolder)));
         // also assert it's not empty
-        contents = dir.listFiles();
+        File[] contents = dir.listFiles();
         Assert.assertNotSame(0, contents.length);
     }
 }
