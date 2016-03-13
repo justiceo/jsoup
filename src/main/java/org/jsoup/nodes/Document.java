@@ -478,7 +478,7 @@ public class Document extends Element {
             inputStream.close();
             outputStream.close();
         } catch (IOException e) {
-            System.out.println("Unable to save " + imageUrl + " as an image. Check the url and try again");
+            System.out.println("No image found at " + imageUrl);
         }
 
     }
