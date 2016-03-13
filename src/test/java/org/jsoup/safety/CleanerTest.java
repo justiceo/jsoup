@@ -6,7 +6,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities;
 import org.junit.Test;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
@@ -253,11 +252,12 @@ public class CleanerTest {
     public void testSaveLinks() {
         // using example.com which has only one domain
         String fileDestination = "index.txt";
+        boolean extractLinks=true;
         Scanner scanner = null;
         String linkFromExample_com = "";
         String expectedLink = "http://www.iana.org/domains/example";
         try {
-            Jsoup.connect("http://example.com").get().saveLinks(fileDestination);
+            Jsoup.connect("http://example.com").get().saveLinks(fileDestination, extractLinks);
             scanner = new Scanner(new File(fileDestination));
         } catch (IOException e) {
             e.printStackTrace();
@@ -267,5 +267,25 @@ public class CleanerTest {
             linkFromExample_com += scanner.next();
         }
         assertEquals(expectedLink, linkFromExample_com);
+    }
+    @Test
+    public void testSaveImages() {
+        // using wikipedia.org which only has one image
+        String fileDestination = "index.txt";
+        boolean extractLinks=false;
+        Scanner scanner = null;
+        String linkFromExample_com = "";
+        String expectedImage = "https://www.wikipedia.org/portal/wikipedia.org/assets/img/Wikipedia_wordmark.pnghttps://www.wikipedia.org/portal/wikipedia.org/assets/img/Wikipedia-logo-v2.png";
+        try {
+            Jsoup.connect("http://wikipedia.org").get().saveLinks(fileDestination, extractLinks);
+            scanner = new Scanner(new File(fileDestination));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        while(scanner.hasNext()) {
+            linkFromExample_com += scanner.next();
+        }
+        assertEquals(expectedImage, linkFromExample_com);
     }
 }
