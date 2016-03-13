@@ -6,7 +6,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities;
 import org.junit.Test;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
