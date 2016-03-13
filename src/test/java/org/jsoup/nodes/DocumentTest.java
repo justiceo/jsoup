@@ -2,6 +2,7 @@ package org.jsoup.nodes;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Scanner;
 
 import org.jsoup.Jsoup;
 import org.jsoup.TextUtil;
@@ -144,5 +145,25 @@ public class DocumentTest {
 
         Document doc = Jsoup.parse(builder.toString());
         doc.clone();
+    }
+
+    @Test
+    public void testSaveLinks() {
+        // using example.com which has only one domain
+        String fileDestination = "index.txt";
+        Scanner scanner = null;
+        String linkFromExample_com = "";
+        String expectedLink = "http://www.iana.org/domains/example";
+        try {
+            Jsoup.connect("http://example.com").get().saveLinks(fileDestination);
+            scanner = new Scanner(new File(fileDestination));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        while(scanner.hasNext()) {
+            linkFromExample_com += scanner.next();
+        }
+        assertEquals(expectedLink, linkFromExample_com);
     }
 }
