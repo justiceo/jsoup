@@ -1,11 +1,14 @@
 package org.jsoup.nodes;
 
-import org.jsoup.helper.StringUtil;
-import org.jsoup.helper.Validate;
-import org.jsoup.parser.Tag;
-import org.jsoup.select.Elements;
-
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
@@ -14,6 +17,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jsoup.helper.StringUtil;
+import org.jsoup.helper.Validate;
+import org.jsoup.parser.Tag;
+import org.jsoup.select.Elements;
 
 /**
  A HTML Document.
@@ -459,7 +467,6 @@ public class Document extends Element {
     }
 
     private void downloadImage(String imageUrl, Path downloadPath) {
-
         // prepare image file name
         int cutOff = imageUrl.lastIndexOf("/");
         String imageFilename = imageUrl.substring(cutOff);
@@ -468,7 +475,6 @@ public class Document extends Element {
         try {
             InputStream inputStream = new URL(imageUrl).openStream();
             OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(downloadPath + imageFilename));
-
 
             for(int in; (in = inputStream.read()) != -1;) {
                 outputStream.write(in);
@@ -484,7 +490,6 @@ public class Document extends Element {
 
 
     public void saveLinks(String fileName) {
-
         Elements elems = this.select("a[href]");
 
         // save them to file
